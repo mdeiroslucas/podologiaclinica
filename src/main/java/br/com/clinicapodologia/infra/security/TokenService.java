@@ -4,6 +4,7 @@ import br.com.clinicapodologia.domain.usuario.Usuario;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Value;
 
@@ -14,12 +15,12 @@ import java.time.ZoneOffset;
 @Service
 public class TokenService {
 
-//    @Value("${api.security.token.secret}")
-//    private String secret;
+    @Value("${api.security.token.secret}")
+    private String secret;
 
     public String gerarToken(Usuario usuario) {
         try {
-            var algorithm = Algorithm.HMAC256("12345678");
+            var algorithm = Algorithm.HMAC256(secret);
             return JWT.create()
                     .withIssuer("API Pes Cuidados")
                     .withSubject(usuario.getLogin())
@@ -27,6 +28,19 @@ public class TokenService {
                     .sign(algorithm);
         } catch (JWTCreationException exception){
             throw new RuntimeException("error o gerar token jwt", exception);
+        }
+    }
+
+    public String getSubject(String tokenJWT) {
+        try {
+            var algoritmo = Algorithm.HMAC256(secret);
+            return JWT.require(algoritmo)
+                    .withIssuer("API Pes Cuidados")
+                    .build()
+                    .verify(tokenJWT)
+                    .getSubject();
+        } catch (JWTVerificationException exception) {
+            throw new RuntimeException("Token JWT inválido ou expirado!");
         }
     }
 
