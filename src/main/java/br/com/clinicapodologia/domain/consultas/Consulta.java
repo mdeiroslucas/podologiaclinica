@@ -1,6 +1,7 @@
 package br.com.clinicapodologia.domain.consultas;
 
 import br.com.clinicapodologia.domain.medico.Medico;
+import br.com.clinicapodologia.domain.paciente.Paciente;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -25,9 +26,9 @@ public class Consulta {
     @JoinColumn(name = "medico_id")
     private Medico medico;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "paciente_id")
-//    private Paciente paciente;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "paciente_id")
+    private Paciente paciente;
 
     private LocalDateTime data;
 }
