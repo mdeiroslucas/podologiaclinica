@@ -2,6 +2,7 @@ package br.com.clinicapodologia.controller;
 
 import br.com.clinicapodologia.domain.consultas.AgendaDeConsultas;
 import br.com.clinicapodologia.domain.consultas.DadosAgendamentoConsulta;
+import br.com.clinicapodologia.domain.consultas.DadosCancelamentoConsulta;
 import br.com.clinicapodologia.domain.consultas.DadosDetalhamentoConsulta;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,5 +24,12 @@ public class ConsultaController {
 
         return ResponseEntity.ok(new DadosDetalhamentoConsulta(null, null, null, null));
 
+    }
+
+    @DeleteMapping
+    @Transactional
+    public ResponseEntity cancelar(@RequestBody @Valid DadosCancelamentoConsulta dados) {
+        agenda.cancelar(dados);
+        return ResponseEntity.noContent().build();
     }
 }

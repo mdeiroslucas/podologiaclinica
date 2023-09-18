@@ -1,5 +1,6 @@
 package br.com.clinicapodologia.domain.consultas;
 
+import br.com.clinicapodologia.domain.consultas.validacoes.ValidadorAgendamentoDeConsulta;
 import br.com.clinicapodologia.domain.medico.Medico;
 import br.com.clinicapodologia.domain.medico.MedicoRepository;
 import br.com.clinicapodologia.domain.paciente.PacienteRepository;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 
 @Service
 public class AgendaDeConsultas {
@@ -21,6 +23,9 @@ public class AgendaDeConsultas {
 
     @Autowired
     private MedicoRepository medicoRepository;
+
+    @Autowired
+    private List<ValidadorAgendamentoDeConsulta> validadores;
     public void agendar(DadosAgendamentoConsulta dados){
         if(!pacienteRepository.existsById(dados.idPaciente())){
             throw new ValidacaoException("Id do paciente informado não existe!");
@@ -30,6 +35,7 @@ public class AgendaDeConsultas {
             throw new ValidacaoException("Id do médico informado não existe!");
         }
 
+        validadores.forEach(v-> v.validar(dados));
 
         var paciente = pacienteRepository.findById(dados.idPaciente()).get();
         var medico = medicoRepository.findById(dados.idMedico()).get();
@@ -49,10 +55,12 @@ public class AgendaDeConsultas {
             throw new ValidacaoException("Especialidade é obrigatória quando médico não for escolhido!");
         }
 
-        return medicoRepository.escolherMedicoAleatorioLivreNaData(dados.especialidade(), dados.data());
+        return null;
+
+//        return medicoRepository.escolherMedicoAleatorioLivreNaData(dados.especialidade(), dados.data());
     }
 
-    private void cancelamentoConsulta(DadosCancelamentoConsulta dados){
+    public void cancelar(DadosCancelamentoConsulta dados){
         if (!consultaRepository.existsById(dados.idConsulta())){
             throw new ValidacaoException("Id da consulta informada não existe!");
         }
@@ -63,9 +71,9 @@ public class AgendaDeConsultas {
 
         var consulta = consultaRepository.findById(dados.idConsulta()).get();
 
-        if (!podeCancelarConsulta(consulta.getData())) {
-            throw new ValidacaoException("Consulta só poderá ser cancelada com antecedência mínima de 24 horas!");
-        }
+//        if (!podeCancelarConsulta(consulta.getData())) {
+//            throw new ValidacaoException("Consulta só poderá ser cancelada com antecedência mínima de 24 horas!");
+//        }
 
         consulta.cancelar(dados.motivo());
     }
