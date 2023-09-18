@@ -1,5 +1,6 @@
 package br.com.clinicapodologia.domain.consultas;
 
+import br.com.clinicapodologia.domain.medico.Especialidade;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.cglib.core.Local;
@@ -12,6 +13,9 @@ public record DadosAgendamentoConsulta(
         Long idPaciente,
         @NotNull
         @Future
-        LocalDateTime data
+        LocalDateTime data,
+
+        Especialidade especialidade,
+        MotivoCancelamentoConsulta motivoCancelamentoConsulta
 ) {
 }
