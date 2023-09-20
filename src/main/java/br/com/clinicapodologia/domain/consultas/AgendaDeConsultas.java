@@ -1,5 +1,6 @@
 package br.com.clinicapodologia.domain.consultas;
 
+import br.com.clinicapodologia.domain.consultas.cancelamento.ValidadorCancelamentoDeConsulta;
 import br.com.clinicapodologia.domain.consultas.validacoes.ValidadorAgendamentoDeConsulta;
 import br.com.clinicapodologia.domain.medico.Medico;
 import br.com.clinicapodologia.domain.medico.MedicoRepository;
@@ -26,6 +27,9 @@ public class AgendaDeConsultas {
 
     @Autowired
     private List<ValidadorAgendamentoDeConsulta> validadores;
+
+    @Autowired
+    private List<ValidadorCancelamentoDeConsulta> validadoresCancelamento;
     public DadosDetalhamentoConsulta agendar(DadosAgendamentoConsulta dados){
         if(!pacienteRepository.existsById(dados.idPaciente())){
             throw new ValidacaoException("Id do paciente informado não existe!");
@@ -73,9 +77,8 @@ public class AgendaDeConsultas {
 
         var consulta = consultaRepository.findById(dados.idConsulta()).get();
 
-//        if (!podeCancelarConsulta(consulta.getData())) {
-//            throw new ValidacaoException("Consulta só poderá ser cancelada com antecedência mínima de 24 horas!");
-//        }
+        validadoresCancelamento.forEach(v-> v.validar(dados));
+
 
         consulta.cancelar(dados.motivo());
     }
