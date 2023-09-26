@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
-@Table(name = "consulta")
+@Table(name = "consultas")
 @Entity(name = "Consulta")
 @Getter
 @NoArgsConstructor
@@ -35,6 +35,9 @@ public class Consulta {
     @Enumerated(EnumType.STRING)
     @Column(name = "motivo_cancelamento")
     private MotivoCancelamentoConsulta motivoCancelamentoConsulta;
+
+    public Consulta(Long id, Medico medico, Paciente paciente, LocalDateTime data) {
+    }
 
 
     public void cancelar(MotivoCancelamentoConsulta motivoCancelamentoConsulta){
