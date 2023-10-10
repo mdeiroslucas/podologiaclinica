@@ -36,12 +36,13 @@ public class MedicoController {
     }
 
     @GetMapping
-    @ResponseStatus(HttpStatus.ACCEPTED)
+    @ResponseStatus(HttpStatus.OK)
     public Page<DadosListagemMedico> listar(@PageableDefault(size = 10, sort = {"nome"}) Pageable paginacao){
         return repository.findAllByAtivoTrue(paginacao).map(DadosListagemMedico::new);
     }
     @PutMapping
     @Transactional
+    @ResponseStatus(HttpStatus.OK)
     public DadosDetalhamentoMedico atualizar(@RequestBody @Valid DadosAtualizacaoMedico dados){
         var medico = repository.getReferenceById(dados.id());
         medico.atualizarInformacoes(dados);
